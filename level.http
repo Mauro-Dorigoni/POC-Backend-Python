@@ -9,3 +9,12 @@ Content-Type: application/json
 
 ###
 GET http://127.0.0.1:5000/level
+
+###
+GET http://127.0.0.1:5000/level/1
+
+###
+DELETE http://127.0.0.1:5000/level/3
+
+###
+PATCH  http://127.0.0.1:5000/level/2

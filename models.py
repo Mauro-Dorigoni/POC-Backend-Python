@@ -1,14 +1,15 @@
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy #ORM que vamos a estar utilizando. Tanto la documentacion general de SQLAlchemy y la especifica relacionada con flask aplican
 import datetime
 
 db = SQLAlchemy()
 
 class BaseModel(db.Model):
     __abstract__= True
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True) #Cualquier Int PK es tomado directamente como Autoincremental
     date_created = db.Column(db.DateTime, default=datetime.datetime.now)
     date_deleted = db.Column(db.DateTime, nullable=True)
 
+#Las definiciones de tablas Muchos a Muchos tienen que ser definidas PREVIO a las clases. SQLAlchemy toma un enfoque mas a menos
 user_course = db.Table(
     "user_course", 
     db.Column("user_id", db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), primary_key=True),
@@ -20,7 +21,9 @@ class AcademicLevel(BaseModel):
 
     name = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.Text, nullable=False)
+    #Relacion uno a muchos con User. Importante, el primer argumento es el nombre de la CLASE, no la TABLA. El segundo argumento es el nombre de la columna en la tabla del otro lado.
     users = db.relationship("User", back_populates="level")
+    #Esta funcion es necesaria para generar la estructura que sera devuelta en un JSON, sino no se pueden resolver los tipos. Va a ser necesaria en todas las clases
     def to_dict(self):
         return{
             "id":self.id,
@@ -37,9 +40,9 @@ class Course(BaseModel):
     description = db.Column(db.Text, nullable=False)
 
     users = db.relationship(
-        "User",
-        secondary=user_course,
-        back_populates="courses"
+        "User", #nombre de la CLASE
+        secondary=user_course, #El secondary indica la tabla intermedia en la base de datos, que tiene que ser definida previamente
+        back_populates="courses" #nombre de la COLUMNA
     )
 
 class User(BaseModel):
@@ -49,7 +52,7 @@ class User(BaseModel):
     lastname = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
 
-    level_id = db.Column(db.Integer, db.ForeignKey("academiclevel.id", ondelete="CASCADE"), nullable=False)
+    level_id = db.Column(db.Integer, db.ForeignKey("academiclevel.id", ondelete="CASCADE"), nullable=False) #Por mas que defina la relacion, tambien tengo que definir la columna del lado del muchos
     level = db.relationship("AcademicLevel", back_populates="users")  
 
     courses = db.relationship( 
