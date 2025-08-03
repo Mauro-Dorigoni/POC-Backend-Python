@@ -32,7 +32,7 @@ class AcademicLevel(BaseModel):
             "date_created": self.date_created,
             "date_deleted": self.date_deleted,
         }
-        if include_users:
+        if include_users: #La query popula todas las relaciones, por temas de largo y posibles bucles, aclaramos si necesitamos mostrar los muchos o no
             data["users"] = [user.to_dict() for user in self.users]
         return data
 
@@ -45,8 +45,21 @@ class Course(BaseModel):
     users = db.relationship(
         "User", #nombre de la CLASE
         secondary=user_course, #El secondary indica la tabla intermedia en la base de datos, que tiene que ser definida previamente
-        back_populates="courses" #nombre de la COLUMNA
+        back_populates="courses" #nombre de la COLUMNA en la clase
     )
+
+    def to_dict(self, include_users=False):
+        data = {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "date_created": self.date_created,
+            "date_deleted": self.date_deleted,
+        }
+        if include_users: #La query popula todas las relaciones, por temas de largo y posibles bucles, aclaramos si necesitamos mostrar los muchos o no
+            data["users"] = [user.to_dict() for user in self.users]
+        return data
+
 
 class User(BaseModel):
     __tablename__ = "user"
@@ -71,7 +84,7 @@ class User(BaseModel):
             "email": self.email,
             "level_id": self.level_id
         }
-        if include_level and self.level:
+        if include_level and self.level: #mostramos los datos del nivel del usuario
             data["level"] = self.level.to_dict() 
         return data
 

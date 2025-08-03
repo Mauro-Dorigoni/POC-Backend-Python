@@ -1,7 +1,8 @@
 from flask import Flask #API REST en Python
 from models import db
-from academiclevel_controller import level_bp
-from user_controller import user_bp
+from controllers.academiclevel_controller import level_bp
+from controllers.user_controller import user_bp
+from controllers.course_controller import course_bp
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
@@ -30,6 +31,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #Es un modo debug del ORM p
 db.init_app(app) #Inicializa las configuraciones de la app Flask
 app.register_blueprint(level_bp) #Agrega las Rutas definidas en el controlador de Level
 app.register_blueprint(user_bp)
+app.register_blueprint(course_bp)
+
 
 #Inicializa la API en el puerto especificado al ser llamado este archivo por consola
 if __name__ == '__main__':

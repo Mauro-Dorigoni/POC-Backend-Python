@@ -1,0 +1,11 @@
+###
+POST http://127.0.0.1:5000/course
+Content-Type: application/json
+
+{
+  "name": "Intro to Writing",
+  "description": "Lorem ipsum"
+}
+
+###
+GET http://127.0.0.1:5000/course

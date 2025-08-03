@@ -1,0 +1,23 @@
+### 
+POST http://127.0.0.1:5000/user
+Content-Type: application/json
+
+{
+  "name": "Jane",
+  "lastname": "Doe",
+  "email": "jane@doe.com",
+  "level":{
+    "id": 1 
+  }
+}
+
+###
+GET http://127.0.0.1:5000/user/level/1
+
+###
+POST http://127.0.0.1:5000/user/2/enroll
+Content-Type: application/json
+
+{
+  "course_ids": [1,2]
+}
