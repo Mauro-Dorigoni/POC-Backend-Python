@@ -21,7 +21,7 @@ def get_levels():
     levels = AcademicLevel.query.all() #Modo de hacer una Query a BD
     return jsonify({
     "message": "Academic Levels found",
-    "levels": [level.to_dict() for level in levels]
+    "levels": [level.to_dict(include_users=True) for level in levels]
     }), 200
 
 #GETONE
@@ -30,7 +30,7 @@ def get_one_level(id):
     level = AcademicLevel.query.get_or_404(id) #El findOneOrFail de SQLAlchemy
     return jsonify({
         "message":"Academic Level Found",
-        "level": level.to_dict()
+        "level": level.to_dict(include_users=True)
     }),200
 
 #DELETE (fisico)

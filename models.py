@@ -24,14 +24,17 @@ class AcademicLevel(BaseModel):
     #Relacion uno a muchos con User. Importante, el primer argumento es el nombre de la CLASE, no la TABLA. El segundo argumento es el nombre de la columna en la tabla del otro lado.
     users = db.relationship("User", back_populates="level")
     #Esta funcion es necesaria para generar la estructura que sera devuelta en un JSON, sino no se pueden resolver los tipos. Va a ser necesaria en todas las clases
-    def to_dict(self):
-        return{
-            "id":self.id,
-            "name":self.name,
-            "description":self.description,
-            "date_created":self.date_created,
-            "date_deleted":self.date_deleted
+    def to_dict(self, include_users=False):
+        data = {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "date_created": self.date_created,
+            "date_deleted": self.date_deleted,
         }
+        if include_users:
+            data["users"] = [user.to_dict() for user in self.users]
+        return data
 
 class Course(BaseModel):
     __tablename__ = "course"
@@ -60,5 +63,16 @@ class User(BaseModel):
         secondary=user_course,
         back_populates="users"
     )
+    def to_dict(self, include_level=False):
+        data = {
+            "id": self.id,
+            "name": self.name,
+            "lastname": self.lastname,
+            "email": self.email,
+            "level_id": self.level_id
+        }
+        if include_level and self.level:
+            data["level"] = self.level.to_dict() 
+        return data
 
 
